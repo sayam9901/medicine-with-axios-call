@@ -2,21 +2,21 @@
 import React from 'react';
 
 function ItemList({ items, addToCart }) {
-    // const [dataFetched, setDataFetched] = useState(false);
+    const [dataFetched, setDataFetched] = useState(false);
 
-    // useEffect(() => {
-    //   // Fetch initial data from the API when the component mounts
-    //   if (!dataFetched) {
-    //     axios.get('https://crudcrud.com/api/651488945048411aa2fc4ac9eec50a47/items')
-    //       .then((response) => {
-    //         setItems(response.data);
-    //         setDataFetched(true);
-    //       })
-    //       .catch((error) => {
-    //         console.error('Error fetching data:', error);
-    //       });
-    //   }
-    // }, [dataFetched, setItems]);
+    useEffect(() => {
+      // Fetch initial data from the API when the component mounts
+      if (!dataFetched) {
+        axios.get('https://crudcrud.com/api/651488945048411aa2fc4ac9eec50a47/items')
+          .then((response) => {
+            setItems(response.data);
+            setDataFetched(true);
+          })
+          .catch((error) => {
+            console.error('Error fetching data:', error);
+          });
+      }
+    }, [dataFetched, setItems]);
   return (
     <div className="item-list">
       <h2>Items</h2>
