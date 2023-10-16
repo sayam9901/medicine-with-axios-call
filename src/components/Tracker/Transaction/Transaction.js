@@ -1,15 +1,30 @@
 import React from 'react';
+import { getDatabase, ref, remove } from 'firebase/database';
 
 const Transaction = props => {
+    const { name, price, type, currentUID, transactionId } = props;
+    
+    const handleDelete = () => {
+        const db = getDatabase();
+        const transactionRef = ref(db, `Transactions/${currentUID}/${transactionId}`);
+
+        remove(transactionRef)
+            .then(() => {
+                console.log('Transaction deleted successfully.');
+            })
+            .catch(error => {
+                console.error('Error deleting transaction:', error);
+            });
+    };
     return (
         <li>
-            <div>{props.name}</div>
-            <div>{props.type === 'deposit' ? (
-                <span className="deposit"> +{props.price} <button>X</button> </span>
+            <div>{name}</div>
+            <div>{type === 'deposit' ? (
+                <span className="deposit"> +{price} <button onClick={handleDelete}>X</button> </span>
             ) : (
                 <span className="expense">
-                    -{props.price}
-                    <button>X</button> 
+                    -{price}
+                    <button onClick={handleDelete}>X</button> 
                 </span>
             )}</div>
         </li>

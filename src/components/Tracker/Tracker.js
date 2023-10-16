@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Tracker.css';
 import {fire ,auth}from '../../config/Fire';
 import {onAuthStateChanged,  signOut } from 'firebase/auth';
-import { getDatabase, ref, push, get , remove} from 'firebase/database'; 
+import { getDatabase, ref, push, get } from 'firebase/database'; 
 import Transaction from './Transaction/Transaction';
 
 class Tracker extends Component {
@@ -101,36 +101,6 @@ class Tracker extends Component {
             console.log('Incomplete data or undefined currentUID.');
         }
     }
-    //delete the entry according to its index
-    onDelete = (transactionId) => {
-        const { currentUID } = this.state;
-
-        if (!currentUID) {
-            return;
-        }
-
-        const db = getDatabase(fire);
-        const transactionsRef = ref(db, `Transactions/${currentUID}/${transactionId}`);
-
-        // Remove the transaction from Firebase
-        remove(transactionsRef)
-            .then(() => {
-                // Success callback
-                const updatedTransactions = this.state.transactions.filter((transaction) => transaction.id !== transactionId);
-                const updatedMoney = updatedTransactions.reduce((total, transaction) => {
-                    return transaction.type === 'deposit' ? total + parseFloat(transaction.price) : total - parseFloat(transaction.price);
-                }, 0);
-
-                this.setState({
-                    transactions: updatedTransactions,
-                    money: updatedMoney,
-                });
-            })
-            .catch((error) => {
-                // Error callback
-                console.log('Error:', error);
-            });
-    }
 
     render() {
         // const app = initializeApp(appConfig); // Initialize Firebase app using your configuration
@@ -183,9 +153,11 @@ class Tracker extends Component {
                         {this.state.transactions.map((transaction) => (
                             <Transaction 
                                 key = {transaction.id}
+                                transactionId = {transaction.id}
                                 type={transaction.type}
                                 name={transaction.name}
                                 price={transaction.price}
+                                currentUID={this.state.currentUID}
                                 // onDelete={() => this.onDelete(transaction.id)}
                             />
                         ))}
