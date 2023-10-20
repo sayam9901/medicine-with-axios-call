@@ -111,6 +111,10 @@ class Tracker extends Component {
             <div className="trackerBlock">
                 <div className="welcome">
                     <span>Hi, {currentUser.displayName}!</span>
+                    {
+                        this.state.money>=10000 && <button className="exit">PREMIUM</button>
+                    }
+                    
                     <button className="exit" onClick={this.logout}>Logout</button>
                 </div>
                 <div className="totalMoney">${this.state.money}</div>
