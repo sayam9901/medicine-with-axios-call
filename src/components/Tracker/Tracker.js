@@ -3,6 +3,7 @@ import './Tracker.css';
 import {fire ,auth}from '../../config/Fire';
 import {onAuthStateChanged,  signOut } from 'firebase/auth';
 import { getDatabase, ref, push, get } from 'firebase/database'; 
+import { CSVLink } from 'react-csv'
 import Transaction from './Transaction/Transaction';
 
 class Tracker extends Component {
@@ -16,6 +17,7 @@ class Tracker extends Component {
         price: '',
         currentUID: null,
         isBlackBackground: false ,
+        DownloadedData : [],
     }
     componentDidMount() {
         onAuthStateChanged(auth, (user) => {
@@ -107,7 +109,29 @@ class Tracker extends Component {
             isBlackBackground: !prevState.isBlackBackground,
         }));
     };
+   //Download the data based on the currentUid of the user 
+   downloadUserData = () => {
+    const { currentUID } = this.state;
 
+    if (currentUID) {
+        const db = getDatabase();
+        const transactionRef = ref(db, `Transactions/${currentUID}`);
+
+        get(transactionRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                // Handle the data here
+                const data = snapshot.val();
+                this.state.DownloadedData = [data]
+                console.log(this.state.DownloadedData)
+                // ... (process data as needed)
+            } else {
+                console.error('Data does not exist for the specified user.');
+            }
+        }).catch((error) => {
+            console.error('Error downloading user data:', error);
+        });
+    }
+};
     render() {
         // const app = initializeApp(appConfig); // Initialize Firebase app using your configuration
         // const auth = getAuth(app); // Get the auth object associated with your Firebase app
@@ -122,7 +146,13 @@ class Tracker extends Component {
                         this.state.money>=10000 && <button className="exit" onClick={this.toggleBackground}>PREMIUM</button>
                     }
                     {
-                        isBlackBackground && <button className="exit" >DOWNLOAD</button>
+                        isBlackBackground && <button className="exit" onClick={this.downloadUserData}> <CSVLink
+                        data={this.state.DownloadedData}
+                        filename={'user_data.csv'}
+                        className="exit"
+                      >
+                        Download
+                      </CSVLink></button>
                     }
                     <button className="exit" onClick={this.logout}>Logout</button>
                 </div>
