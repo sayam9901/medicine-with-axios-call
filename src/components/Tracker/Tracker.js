@@ -15,6 +15,7 @@ class Tracker extends Component {
         transactionType: '',
         price: '',
         currentUID: null,
+        isBlackBackground: false ,
     }
     componentDidMount() {
         onAuthStateChanged(auth, (user) => {
@@ -101,20 +102,28 @@ class Tracker extends Component {
             console.log('Incomplete data or undefined currentUID.');
         }
     }
+    toggleBackground = () => {
+        this.setState((prevState) => ({
+            isBlackBackground: !prevState.isBlackBackground,
+        }));
+    };
 
     render() {
         // const app = initializeApp(appConfig); // Initialize Firebase app using your configuration
         // const auth = getAuth(app); // Get the auth object associated with your Firebase app
         const currentUser = auth.currentUser;
-
+        const { isBlackBackground } = this.state;
+        const backgroundClass = isBlackBackground ? 'black-background' : 'white-background';
         return (
-            <div className="trackerBlock">
+        <div  className={`trackerBlock ${backgroundClass}`}>
                 <div className="welcome">
                     <span>Hi, {currentUser.displayName}!</span>
                     {
-                        this.state.money>=10000 && <button className="exit">PREMIUM</button>
+                        this.state.money>=10000 && <button className="exit" onClick={this.toggleBackground}>PREMIUM</button>
                     }
-                    
+                    {
+                        isBlackBackground && <button className="exit" >DOWNLOAD</button>
+                    }
                     <button className="exit" onClick={this.logout}>Logout</button>
                 </div>
                 <div className="totalMoney">${this.state.money}</div>
