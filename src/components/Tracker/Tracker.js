@@ -28,6 +28,7 @@ class Tracker extends Component {
             }
         });
     }
+    //function to get the transaction from the firebase
     loadTransactions(currentUID) {
         if (!currentUID) {
             return; // Exit if currentUID is not available
@@ -58,7 +59,7 @@ class Tracker extends Component {
     logout = () => {
         signOut(auth);
     }
-
+   // ot target the value ffrom the form input an store them into the handler
     handleChange = input => e => {
         this.setState({
             [input]: e.target.value !=="0" ? e.target.value : ""
@@ -103,7 +104,8 @@ class Tracker extends Component {
             // Handle the case where data is missing or currentUID is undefined
             console.log('Incomplete data or undefined currentUID.');
         }
-    }
+    } 
+    //premiuim button to state the premium theme to true or false
     toggleBackground = () => {
         this.setState((prevState) => ({
             isBlackBackground: !prevState.isBlackBackground,

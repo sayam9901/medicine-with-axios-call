@@ -3,7 +3,7 @@ import { getDatabase, ref, remove } from 'firebase/database';
 
 const Transaction = props => {
     const { name, price, type, currentUID, transactionId } = props;
-    
+    //function to delete the transaction from the firebase realtime database
     const handleDelete = () => {
         const db = getDatabase();
         const transactionRef = ref(db, `Transactions/${currentUID}/${transactionId}`);
